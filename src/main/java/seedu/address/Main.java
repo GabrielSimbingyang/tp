@@ -19,7 +19,7 @@ import javafx.application.Application;
  * to be the entry point of the application, we avoid this issue.
  */
 public class Main {
-    public static void main(String[] args) { // ss/
+    public static void main(String[] args) { 
         Application.launch(MainApp.class, args);
     }
 }
