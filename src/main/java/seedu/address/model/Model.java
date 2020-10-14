@@ -132,4 +132,6 @@ public interface Model {
      * Deletes entries on the GUI when clear command is called.
      */
     void clearEntryList();
+
+    void shuffleBank();
 }

@@ -5,6 +5,7 @@ import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -94,6 +95,35 @@ public class ModelManager implements Model {
     }
 
     //=========== Word Bank ================================================================================
+    /**
+     * Shuffles the observed entry list using a similar process as the replace entry list command except that the deck
+     * is randomised
+     * */
+    @Override
+    public void shuffleBank() {
+        if (currentDeckIndex.equals(Optional.empty()) || currentDeckIndex.equals(0)) {
+            logger.info("Deck not selected, cannot shuffle");
+        }
+        ObservableList<Entry> shuffledList = getCurrentDeck().getEntries().shuffle();
+        Iterator<Entry> iterator = addressBook.getObservedEntries().iterator();
+        ArrayList<Entry> copy = new ArrayList<Entry>();
+        ArrayList<Word> questions = new ArrayList<>();
+        ArrayList<Translation> answers = new ArrayList<>();
+
+        while (iterator.hasNext()) {
+            copy.add(iterator.next());
+        }
+        for (Entry entry : copy) {
+            addressBook.getObservedEntries().remove(entry);
+        }
+        for (Entry entry : shuffledList) {
+            questions.add(entry.getWord());
+            answers.add(entry.getTranslation());
+            addressBook.getObservedEntries().add(new Entry(entry.getWord(),new Translation("?")));
+        }
+        System.out.println(questions);
+        System.out.println(answers);
+    }
 
     @Override
     public void setAddressBook(ReadOnlyAddressBook addressBook) {
@@ -122,6 +152,7 @@ public class ModelManager implements Model {
     /**
      * This function takes the entry and adds it to the deck entry list as well as the observedEntries in the
      * AddressBook
+     *
      * @param entry refers to the entry inputted by the user
      */
 
@@ -136,7 +167,6 @@ public class ModelManager implements Model {
     @Override
     public void setEntry(Entry target, Entry editedEntry) {
         requireAllNonNull(target, editedEntry);
-
         Deck currentDeck = getCurrentDeck();
         currentDeck.setEntry(target, editedEntry);
     }
@@ -195,11 +225,10 @@ public class ModelManager implements Model {
         while (iterator.hasNext()) {
             copy.add(iterator.next());
         }
-        for (Entry entry: copy) {
+        for (Entry entry : copy) {
             addressBook.getObservedEntries().remove(entry);
         }
     }
-
 
     @Override
     public Deck getCurrentDeck() {
@@ -228,7 +257,6 @@ public class ModelManager implements Model {
             observedDeck.addEntry(new Entry(new Word("Goodbye"), new Translation("さようなら")));
             observedDeck.addEntry(new Entry(new Word("Software"), new Translation("ソフトウェア")));
             observedDeck.addEntry(new Entry(new Word("Engineering"), new Translation("エンジニアリング")));
-            observedDeck.addEntry(new Entry(new Word("This is"), new Translation("a stub btw")));
             addressBook.addDeck(observedDeck);
             return addressBook.getFilteredEntries();
         }
@@ -264,11 +292,6 @@ public class ModelManager implements Model {
      */
     @Override
     public ObservableList<Deck> getFilteredDeckList() {
-        /*UniqueDeckList udl = new UniqueDeckList();
-        udl.add(new Deck(new DeckName("deck_1")));
-        udl.add(new Deck(new DeckName("deck_2")));
-        udl.add(new Deck(new DeckName("deck_3")));
-        return udl.asUnmodifiableObservableList();*/
         return filteredDecks;
     }
 
@@ -296,4 +319,6 @@ public class ModelManager implements Model {
                 && userPrefs.equals(other.userPrefs)
                 && filteredDecks.equals(other.filteredDecks);
     }
+
+
 }

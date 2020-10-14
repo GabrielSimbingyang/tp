@@ -3,6 +3,7 @@ package seedu.address.model.deck.entry;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -34,6 +35,18 @@ public class UniqueEntryList implements Iterable<Entry> {
     public boolean contains(Entry toCheck) {
         requireNonNull(toCheck);
         return internalList.stream().anyMatch(toCheck::isSameEntry);
+    }
+
+    /**
+     * Shuffles the entries in the internal list
+     */
+    public ObservableList<Entry> shuffle() {
+        ObservableList<Entry> newList =  FXCollections.observableArrayList();
+        for (Entry entry : internalList) {
+            newList.add(entry);
+        }
+        Collections.shuffle(newList);
+        return newList;
     }
 
     /**
